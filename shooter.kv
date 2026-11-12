@@ -1,0 +1,197 @@
+#:import dp kivy.metrics.dp
+
+<Starfield>:
+
+<MainScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.015, 0.025, 0.095, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: 0.04, 0.12, 0.25, 0.35
+        Ellipse:
+            size: self.width * 1.4, self.height * 0.75
+            pos: self.width * -0.2, self.height * 0.45
+    Starfield:
+        size: root.size
+        pos: root.pos
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: dp(30), dp(45)
+        spacing: dp(14)
+        MDLabel:
+            text: 'ORBITAL  /  DEFENSE'
+            font_size: '13sp'
+            bold: True
+            theme_text_color: 'Custom'
+            text_color: 0.2, 0.85, 1, 1
+            halign: 'center'
+            size_hint_y: None
+            height: dp(34)
+        Image:
+            source: 'assets/images/rocket.png'
+            size_hint_y: 0.58
+            allow_stretch: True
+        MDLabel:
+            text: 'DEFEND THE GALAXY'
+            font_size: '27sp'
+            bold: True
+            halign: 'center'
+            theme_text_color: 'Custom'
+            text_color: 0.92, 0.97, 1, 1
+            size_hint_y: None
+            height: dp(46)
+        MDLabel:
+            text: 'Move • Shoot • Survive'
+            font_size: '15sp'
+            halign: 'center'
+            theme_text_color: 'Custom'
+            text_color: 0.55, 0.72, 0.9, 1
+            size_hint_y: None
+            height: dp(30)
+        MDButton:
+            style: 'filled'
+            pos_hint: {'center_x': 0.5}
+            size_hint_x: 0.78
+            on_release: root.start_game()
+            MDButtonText:
+                text: 'LAUNCH MISSION'
+                font_size: '18sp'
+
+<Ship@Image>:
+    source: 'assets/images/rocket.png'
+    size_hint: None, None
+    size: dp(50), dp(105)
+
+<EnemyShip>:
+    size_hint: None, None
+    source: 'assets/images/ufo.png'
+    size: dp(48), dp(48)
+
+<GameScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.015, 0.025, 0.095, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: 0.035, 0.12, 0.24, 0.32
+        Ellipse:
+            size: self.width * 1.5, self.height * 0.7
+            pos: self.width * -0.2, self.height * 0.35
+    FloatLayout:
+        id: front
+        Starfield:
+            size: front.size
+            pos: front.pos
+        Ship:
+            id: ship
+            y: dp(105)
+    MDLabel:
+        id: score_label
+        text: 'SCORE  0000'
+        size_hint: None, None
+        size: dp(140), dp(35)
+        pos_hint: {'x': 0.04, 'top': 0.98}
+        font_size: '14sp'
+        bold: True
+        theme_text_color: 'Custom'
+        text_color: 0.3, 0.88, 1, 1
+    MDLabel:
+        id: lives_label
+        text: 'LIVES  5'
+        size_hint: None, None
+        size: dp(110), dp(35)
+        pos_hint: {'x': 0.04, 'top': 0.95}
+        font_size: '13sp'
+        bold: True
+        theme_text_color: 'Custom'
+        text_color: 1, 0.48, 0.62, 1
+    MDFabButton:
+        icon: 'home'
+        pos_hint: {'right': 0.96, 'top': 0.97}
+        on_release: root.manager.current = 'main'
+    MDFabButton:
+        icon: 'pause'
+        pos_hint: {'right': 0.78, 'top': 0.97}
+        on_release: root.show_pause()
+    MDBoxLayout:
+        size_hint_y: None
+        height: dp(90)
+        pos_hint: {'x': 0, 'y': 0}
+        spacing: dp(12)
+        padding: dp(16), dp(10)
+        MDFabButton:
+            icon: 'arrow-left-bold'
+            on_press: root.pressKey('left')
+            on_release: root.releaseKey('left')
+        MDFabButton:
+            icon: 'arrow-right-bold'
+            on_press: root.pressKey('right')
+            on_release: root.releaseKey('right')
+        Widget:
+        MDFabButton:
+            icon: 'arrow-up-bold'
+            md_bg_color: app.theme_cls.primaryColor
+            on_press: root.pressKey('shot')
+            on_release: root.releaseKey('shot')
+
+<Shot>:
+    size_hint: None, None
+    size: dp(12), dp(28)
+    source: 'assets/images/bullet.png'
+
+<GameOverScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.015, 0.025, 0.095, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Starfield:
+        size: root.size
+        pos: root.pos
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: dp(34)
+        spacing: dp(22)
+        MDWidget:
+            size_hint_y: 0.65
+        MDLabel:
+            id: result_title
+            text: 'MISSION FAILED'
+            font_size: '29sp'
+            bold: True
+            halign: 'center'
+            theme_text_color: 'Custom'
+            text_color: 1, 0.35, 0.5, 1
+            size_hint_y: None
+            height: dp(55)
+        MDLabel:
+            id: final_score
+            text: 'SCORE  0000'
+            font_size: '15sp'
+            halign: 'center'
+            theme_text_color: 'Custom'
+            text_color: 0.63, 0.82, 0.97, 1
+            size_hint_y: None
+            height: dp(42)
+        MDButton:
+            style: 'filled'
+            pos_hint: {'center_x': 0.5}
+            size_hint_x: 0.78
+            on_release: root.retry()
+            MDButtonText:
+                text: 'RETRY'
+                font_size: '18sp'
+        MDButton:
+            style: 'text'
+            pos_hint: {'center_x': 0.5}
+            on_release: root.return_to_menu()
+            MDButtonText:
+                text: 'MAIN MENU'
+        MDWidget:
+            size_hint_y: 0.65
