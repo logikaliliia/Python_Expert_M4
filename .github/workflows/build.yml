@@ -9,23 +9,33 @@ permissions:
   contents: read
 
 jobs:
-  build-apk:
-    name: Build debug APK
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-24.04
+
     steps:
-      - name: Check out repository
+      - name: Check out the project
         uses: actions/checkout@v4
 
-      - name: Build APK with Buildozer
-        id: buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
+      - name: Build debug APK
+        run: |
+          set -o pipefail
+          docker run --rm \
+            --volume "${{ github.workspace }}:/home/user/hostcwd" \
+            --workdir /home/user/hostcwd \
+            ghcr.io/kivy/buildozer:latest android debug 2>&1 | tee buildozer.log
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          workdir: .
-          buildozer_version: stable
+          name: buildozer-log
+          path: buildozer.log
+          if-no-files-found: ignore
 
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: orbital-defense-apk
-          path: ${{ steps.buildozer.outputs.filename }}
+          path: bin/*.apk
           if-no-files-found: error
