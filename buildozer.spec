@@ -14,11 +14,12 @@ orientation = portrait
 fullscreen = 0
 
 android.api = 35
-android.minapi = 23
+android.minapi = 24
+android.ndk = 28c
 android.archs = arm64-v8a
 android.accept_sdk_license = True
 
-p4a.branch = develop
+p4a.branch = master
 
 [buildozer]
 log_level = 2
